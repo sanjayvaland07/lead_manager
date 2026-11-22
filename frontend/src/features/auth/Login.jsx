@@ -6,9 +6,37 @@ function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [notice, setNotice] = useState('')
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    setNotice('Login is a UI demo and is not connected to an authentication service yet.')
+
+    const formData = new FormData(event.currentTarget)
+
+    try {
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password")
+        })
+      })
+
+      const data = await response.json()
+      console.log("data ",data)
+      setNotice(data?.message)
+
+      if (!response.ok) {
+        throw new Error(data?.message)
+      }else{
+        alert("login successfully")
+      }
+
+    } catch (err) {
+      console.log("hello world",err.message)
+      setNotice(err.message)
+    }
   }
 
   return (

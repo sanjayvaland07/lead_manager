@@ -7,7 +7,7 @@ function Register() {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
   const [notice, setNotice] = useState('')
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
@@ -16,7 +16,32 @@ function Register() {
       return
     }
 
-    setNotice('Account creation is not connected to an authentication service yet.')
+    try {
+      const response = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password")
+        })
+      })
+
+      const data = await response.json()
+      console.log(data)
+      setNotice(data?.message)
+      if(!response.ok){
+        throw new Error(data?.message)
+      }else{
+        alert("register successfully")
+      }
+
+    }catch(err){
+      console.log(err)
+      setNotice(err.message)
+    }
+
   }
 
   return (
