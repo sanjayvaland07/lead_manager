@@ -6,6 +6,10 @@ async function registerUser(req,res){
     
     try{
         const {email,password} = req.body;
+
+        const user = await findUserByEmail(email)
+        if(user.length > 0) return res.status(401).json({message : "this user is already register"})
+
         const hashPassword = await bcrypt.hash(password,10);
         const result = await createUser(email,hashPassword)
         return res.status(200).json({message : "user register successfully"})
