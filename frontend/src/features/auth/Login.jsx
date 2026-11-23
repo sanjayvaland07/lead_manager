@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
 
 function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [notice, setNotice] = useState('')
+  const navigate = useNavigate()
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -14,6 +15,7 @@ function Login() {
     try {
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -30,7 +32,7 @@ function Login() {
       if (!response.ok) {
         throw new Error(data?.message)
       }else{
-        alert("login successfully")
+        navigate('/')
       }
 
     } catch (err) {
