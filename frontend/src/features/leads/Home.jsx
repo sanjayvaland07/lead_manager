@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import LeadFormModal from './LeadFormModal'
 import './Home.css'
+import { useNavigate } from 'react-router-dom'
 
 const API_URL = 'http://localhost:3000/api/lead'
 
@@ -10,6 +11,7 @@ function Home() {
   const [pageError, setPageError] = useState('')
   const [activeLead, setActiveLead] = useState(null)
   const [deletingLeadId, setDeletingLeadId] = useState('')
+  const navigate = useNavigate()
 
   async function loadLeads() {
     try {
@@ -19,6 +21,7 @@ function Home() {
       const data = await response.json()
 
       if (!response.ok) {
+        navigate("/login")
         throw new Error(data?.message)
       }
 
@@ -39,7 +42,9 @@ function Home() {
       .then((response) => response.json().then((data) => ({ response, data })))
       .then((data) => {
         if (!data.response.ok) {
+            navigate("/login")
           throw new Error(data.data?.message)
+          
         }
 
         if (active) {
