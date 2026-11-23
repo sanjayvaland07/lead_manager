@@ -33,9 +33,10 @@ async function loginUser(req,res) {
         const token = jwt.sign({id : user.id,email : user.email},process.env.JWTSECRET,{expiresIn : "1d"});
         
         res.cookie("token",token,{
-            httponly : true,
-            secure : process.env.JWTSECRET,
-            maxAge : 24 * 60 * 60 * 60 * 1000
+            httpOnly : true,
+            secure : process.env.NODE_ENV === "production",
+            sameSite : "lax",
+            maxAge : 24 * 60 * 60 * 1000
         })
         return res.status(200).json({message : "login successfull"})
     }catch(error){
